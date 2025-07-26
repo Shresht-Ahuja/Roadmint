@@ -1,0 +1,4 @@
+# contains hf token
+.env
+
+__pycache__

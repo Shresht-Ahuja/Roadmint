@@ -121,16 +121,16 @@ def init_session_state():
 def load_models_cached():
     """Load models with caching and error handling"""
     if not st.session_state.models_loaded:
-        with st.spinner("🔄 Loading AI models... This may take a few minutes on first run."):
+        with st.spinner("Loading AI models... This may take a few minutes on first run."):
             try:
                 # Actually call the load_models function from roadmap_generator
                 from loading_my_model import load_models
                 load_models()
                 st.session_state.models_loaded = True
-                st.success("✅ Models loaded successfully!")
+                st.success("Models loaded successfully!")
                 return True
             except Exception as e:
-                st.error(f"❌ Error loading models: {str(e)}")
+                st.error(f"Error loading models: {str(e)}")
                 return False
     return True
 
@@ -144,7 +144,7 @@ def display_evaluation(evaluation):
     if not evaluation:
         return
     
-    st.markdown('<div class="sub-header">📊 Roadmap Quality Analysis</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-header">Roadmap Quality Analysis</div>', unsafe_allow_html=True)
     
     with st.container():
         col1, col2, col3, col4 = st.columns(4)
@@ -193,7 +193,7 @@ def main():
     init_session_state()
     
     # Header
-    st.markdown('<h1 class="main-header">🚀 AI-Powered Learning Roadmap Generator</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">AI-Powered Learning Roadmap Generator</h1>', unsafe_allow_html=True)
     st.markdown("---")
     
     # Sidebar for settings
@@ -201,7 +201,7 @@ def main():
         st.header("⚙️ Settings")
         
         # Model loading status
-        st.header("⚙️ Model Status")
+        st.header("Model Status")
         
         # Check actual model status from the core module
         try:
@@ -216,9 +216,9 @@ def main():
             st.warning("⚠️ Session says loaded but models not found")
             st.session_state.models_loaded = False  # Reset the session state
         else:
-            st.warning("⏳ Models Not Loaded")
+            st.warning("Models Not Loaded")
         
-        if st.button("🔄 Load Models"):
+        if st.button("Load Models"):
             success = load_models_cached()
             if success:
                 st.rerun()  # Refresh the page to update status
@@ -226,15 +226,14 @@ def main():
         st.markdown("---")
         
         # Advanced options
-        with st.expander("🔧 Advanced Options"):
+        with st.expander("Advanced Options"):
             show_evaluation = st.checkbox("Show Quality Analysis", value=True)
             max_attempts = st.slider("Generation Attempts", 1, 5, 3)
-            temperature = st.slider("Creativity Level", 0.0, 1.0, 0.3)
         
         st.markdown("---")
         
         # About section
-        with st.expander("ℹ️ About"):
+        with st.expander("About"):
             st.write("""
             This AI-powered tool generates personalized learning roadmaps using:
             - **Fine-tuned Gemma Model** for roadmap generation
@@ -244,7 +243,7 @@ def main():
             """)
     
     # Main content area with tabs
-    tab1, tab2 = st.tabs(["📝 Skill-Based Roadmap", "📄 PDF-Based Roadmap"])
+    tab1, tab2 = st.tabs(["Skill-Based Roadmap", "PDF-Based Roadmap"])
     
     with tab1:
         st.markdown('<div class="info-message">Enter a skill or technology you want to learn, and I\'ll generate a comprehensive learning roadmap for you!</div>', unsafe_allow_html=True)
@@ -260,7 +259,7 @@ def main():
         
         with col2:
             st.write("")  # Add some space
-            generate_skill_btn = st.button("🚀 Generate Roadmap", type="primary", use_container_width=True)
+            generate_skill_btn = st.button("Generate Roadmap", type="primary", use_container_width=True)
         
         # Popular skills quick selection
         st.write("**Quick Select Popular Skills:**")
@@ -278,7 +277,7 @@ def main():
             if not st.session_state.models_loaded:
                 st.error("❌ Please load the models first using the sidebar.")
             else:
-                with st.spinner(f"🔄 Generating learning roadmap for {skill_input}..."):
+                with st.spinner(f"Generating learning roadmap for {skill_input}..."):
                     try:
                         # Ensure models are actually loaded in the core module
                         from loading_my_model import model, tokenizer

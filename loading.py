@@ -5,9 +5,12 @@ import numpy as np
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+from dotenv import load_dotenv
 
 from huggingface_hub import login
-login("your huggingface_token_here")
+load_dotenv()
+token = os.getenv('HF_TOKEN')
+login(token)
 
 # ✅ Load trained model and tokenizer
 model_id = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"

@@ -6,6 +6,8 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from transformers import BitsAndBytesConfig
+from dotenv import load_dotenv
+import os
 from huggingface_hub import login
 
 # Global variables for models (will be loaded once)
@@ -19,7 +21,9 @@ def load_models():
     global model, tokenizer, semantic_model, device
     
     # Login to Hugging Face
-    login("")  # Replace with your actual token
+    load_dotenv()
+    token = os.getenv('HF_TOKEN')
+    login(token)
     
     # Load trained model and tokenizer
     model_id = "./gemma-roadmap-lora-final"
@@ -336,7 +340,7 @@ def generate_roadmap(skill, max_attempts=3):
                 roadmap = _generate_with_params(skill, max_tokens=350, temperature=0.3, do_sample=True)
             else:
                 # Greedy decoding as last resort
-                roadmap = _generate_with_params(skill, max_tokens=500, temperature=0.0, do_sample=False)
+                roadmap = _generate_with_params(skill, max_tokens=600, temperature=0.0, do_sample=False)
             
             print("Generated roadmap:\n", roadmap)
 
