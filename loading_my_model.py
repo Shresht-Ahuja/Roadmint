@@ -519,17 +519,13 @@ YouTube: {youtube_link}"""
         return generate_roadmap(skill_or_prompt, enhance_links=enhance_links)
 
 class RoadmapEvaluator:
-    """Comprehensive Roadmap Evaluation System"""
-    
-    def __init__(self, semantic_model_name='all-MiniLM-L6-v2', baseline_model_name=None):
-        """
-        Initialize the evaluator with semantic similarity model and optional baseline model
-        
-        Args:
-            semantic_model_name: Name of the sentence transformer model for similarity
-            baseline_model_name: Name of the baseline model to compare against (optional)
-        """
-        self.semantic_model = SentenceTransformer(semantic_model_name)
+    def __init__(self, model_name_or_path='all-MiniLM-L6-v2', baseline_model_name=None):
+        """Initialize with either model name or path"""
+        if isinstance(model_name_or_path, SentenceTransformer):
+            self.semantic_model = model_name_or_path
+        else:
+            self.semantic_model = SentenceTransformer(model_name_or_path)
+            
         self.baseline_model = None
         self.baseline_tokenizer = None
         
@@ -608,11 +604,11 @@ class RoadmapEvaluator:
         steps = []
         current_step = {}
         lines = text.split('\n')
-        
+
         i = 0
         while i < len(lines):
             line = lines[i].strip()
-            
+
             if not line:
                 i += 1
                 continue
@@ -622,7 +618,7 @@ class RoadmapEvaluator:
                 if current_step:  # Save previous step if exists
                     steps.append(current_step)
                 current_step = {'title': line}
-                
+
                 # Check if next line is description
                 if i + 1 < len(lines) and lines[i + 1].strip() and not lines[i + 1].startswith(('Time:', 'Link:', 'YouTube:')):
                     current_step['description'] = lines[i + 1].strip()
@@ -631,13 +627,13 @@ class RoadmapEvaluator:
                 current_step['time'] = line.replace('Time:', '').strip()
             elif line.startswith('Link:'):
                 current_step['link'] = line.replace('Link:', '').strip()
-            
+
             i += 1
-        
+
         # Add the last step if it exists
         if current_step:
             steps.append(current_step)
-        
+
         return steps
     
     def calculate_structure_score(self, roadmap: str) -> Dict:
@@ -774,7 +770,7 @@ class RoadmapEvaluator:
         
         return "\n".join(line.strip() for line in section.splitlines()[1:]).strip()
     
-    def comprehensive_evaluation(self, 
+    def evaluate_roadmap(self, 
                                skill: str, 
                                model_output: str, 
                                instruction_prompt: str = None,
@@ -891,7 +887,7 @@ def generate_single_roadmap(skill, show_evaluation=True, enhance_links=True):
     print(roadmap)
     
     if show_evaluation:
-        evaluation = evaluator.comprehensive_evaluation(
+        evaluation = evaluator.evaluate_roadmap(
             skill=skill,
             model_output=roadmap,
             instruction_prompt=generate_instruction_prompt(skill)

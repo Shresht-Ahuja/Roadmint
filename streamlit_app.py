@@ -192,10 +192,16 @@ def display_evaluation(evaluation):
     
     st.markdown('<div class="sub-header">Roadmap Quality Analysis</div>', unsafe_allow_html=True)
     
+    # Handle both old and new evaluation formats
+    if 'model_structure' in evaluation:  # New format from comprehensive_evaluation
+        struct = evaluation['model_structure']
+        has_reference = evaluation['has_reference']
+    else:  # Old format
+        struct = evaluation['structure']
+        has_reference = evaluation.get('has_reference', False)
+    
     with st.container():
         col1, col2, col3, col4 = st.columns(4)
-        
-        struct = evaluation['structure']
         
         with col1:
             st.markdown('<div class="metric-card">', unsafe_allow_html=True)
@@ -217,22 +223,22 @@ def display_evaluation(evaluation):
             st.metric("Resource Links", struct['has_links'])
             st.markdown('</div>', unsafe_allow_html=True)
     
+    # Completeness ratio
+    st.markdown('<div class="evaluation-box">', unsafe_allow_html=True)
+    st.write(f"**Completeness Ratio:** {struct['completeness_ratio']:.1%} of steps have all required components")
+    st.markdown('</div>', unsafe_allow_html=True)
+    
     # Additional metrics if reference exists
-    if evaluation['has_reference']:
+    if has_reference:
         col1, col2 = st.columns(2)
         with col1:
             st.markdown('<div class="metric-card">', unsafe_allow_html=True)
-            st.metric("Semantic Similarity", f"{evaluation['semantic_similarity']:.1%}")
+            st.metric("Semantic Similarity", f"{evaluation.get('reference_similarity', 0):.1%}")
             st.markdown('</div>', unsafe_allow_html=True)
         with col2:
             st.markdown('<div class="metric-card">', unsafe_allow_html=True)
-            st.metric("Content Coverage", f"{evaluation['content_coverage']:.1%}")
+            st.metric("Content Coverage", f"{evaluation.get('content_coverage', {}).get('coverage_ratio', 0):.1%}")
             st.markdown('</div>', unsafe_allow_html=True)
-    
-    # Completeness ratio
-    st.markdown('<div class="evaluation-box">', unsafe_allow_html=True)
-    st.write(f"**Completeness Ratio:** {struct['completeness_ratio']:.1%} of steps have all required components (title, description, time, link)")
-    st.markdown('</div>', unsafe_allow_html=True)
 
 def main():
     # Initialize session state
@@ -338,7 +344,11 @@ def main():
                             # Evaluate roadmap if enabled
                             if show_evaluation:
                                 evaluator = RoadmapEvaluator(semantic_model)
-                                evaluation = evaluator.evaluate_roadmap(skill_input, roadmap)
+                                evaluation = evaluator.evaluate_roadmap(
+                                    skill=skill_input,
+                                    model_output=roadmap,
+                                    instruction_prompt=None  # Skip baseline comparison if not needed
+                                )
                                 st.session_state.current_evaluation = evaluation
                             
                             st.markdown('<div class="success-message">Roadmap generated successfully!</div>', unsafe_allow_html=True)
