@@ -1,623 +1,334 @@
-### Skill: Java
+### Skill: Python
 
-Step 1: Java Basics  
-Learn syntax, data types, operators, and control flow.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/java-basics/
+Python Syntax and Basics
+Learn variables, data types, control structures, and basic syntax.
+Time: 1-2 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
-Step 2: Object-Oriented Programming in Java  
-Understand classes, objects, inheritance, polymorphism, and encapsulation.  
-Time: 3 days  
-Link: https://www.javatpoint.com/java-oops-concepts
+Data Structures and Algorithms
+Master Python built-in data structures and basic algorithms.
+Time: 2-3 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
-Step 3: Exception Handling and File I/O  
-Learn to handle exceptions and read/write files.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/exception-handling-java/
+Object-Oriented Programming
+Understand classes, objects, inheritance, and design patterns.
+Time: 2-3 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
-Step 4: Collections Framework  
-Explore ArrayList, HashMap, Set, and other core collections.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/collections-in-java-2/
+Libraries and Frameworks
+Learn popular Python libraries for different domains.
+Time: 3-4 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
-Step 5: Multithreading and Concurrency  
-Understand threads, synchronization, and concurrent utilities.  
-Time: 3 days  
-Link: https://www.geeksforgeeks.org/multithreading-in-java/
+Advanced Topics
+Explore advanced Python concepts and best practices.
+Time: 4-6 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
----
 
 ### Skill: C++
 
-Step 1: C++ Basics  
-Learn variables, data types, conditionals, and loops.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/cpp-programming-basics/
+C++ Fundamentals
+Learn basic syntax, variables, data types, and control structures.
+Time: 2-3 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
-Step 2: Functions and Arrays  
-Understand function syntax, recursion, and array operations.  
-Time: 2 days  
-Link: https://www.programiz.com/cpp-programming/functions
+Object-Oriented Programming
+Master classes, objects, inheritance, and polymorphism.
+Time: 3-4 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
-Step 3: Object-Oriented Programming in C++  
-Explore classes, objects, constructors, inheritance, and polymorphism.  
-Time: 3 days  
-Link: https://www.geeksforgeeks.org/object-oriented-programming-in-cpp/
+Memory Management
+Understand pointers, references, and dynamic memory allocation.
+Time: 2-3 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
-Step 4: Pointers and Memory Management  
-Learn about pointers, dynamic allocation, and memory leaks.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/pointers-in-cpp/
+STL and Templates
+Learn Standard Template Library and generic programming.
+Time: 3-4 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
-Step 5: STL (Standard Template Library)  
-Work with vector, map, set, and algorithms in STL.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/the-c-standard-template-library-stl/
+Advanced C++ Features
+Explore modern C++ features and best practices.
+Time: 4-6 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
----
-
-### Skill: Python
-
-Step 1: Python Basics  
-Understand syntax, variables, loops, and conditionals.  
-Time: 2 days  
-Link: https://www.w3schools.com/python/
-
-Step 2: Data Structures  
-Learn about lists, tuples, sets, and dictionaries.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/python-data-structures/
-
-Step 3: Functions & Modules  
-Get familiar with defining functions, scope, and using built-in modules.  
-Time: 2 days  
-Link: https://www.programiz.com/python-programming/function
-
-Step 4: Object-Oriented Programming  
-Understand classes, objects, inheritance, and encapsulation.  
-Time: 3 days  
-Link: https://realpython.com/python3-object-oriented-programming/
-
-Step 5: File I/O and Exceptions  
-Learn how to read/write files and handle errors.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/file-handling-python/
-
----
 
 ### Skill: C
 
-Step 1: C Basics  
-Learn variables, data types, conditionals, and loops in C.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/c-programming-language/
+C Programming Basics
+Learn fundamental C syntax, variables, and basic I/O operations.
+Time: 2-3 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
-Step 2: Functions and Scope  
-Understand function calls, scope, and recursion.  
-Time: 2 days  
-Link: https://www.programiz.com/c-programming/c-functions
+Functions and Arrays
+Master function definitions, parameters, and array manipulation.
+Time: 2-3 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
-Step 3: Arrays and Strings  
-Work with arrays, strings, and related operations.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/arrays-in-c-cpp/
+Pointers and Memory
+Understand pointer arithmetic, memory allocation, and management.
+Time: 3-4 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
-Step 4: Pointers and Memory  
-Master pointers, pointer arithmetic, and dynamic memory.  
-Time: 3 days  
-Link: https://www.geeksforgeeks.org/pointers-in-c/
+Structures and File I/O
+Learn structures, unions, and file handling operations.
+Time: 2-3 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
-Step 5: File Handling and Preprocessor  
-Learn file I/O and macros in C.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/basics-file-handling-c/
+Advanced C Programming
+Explore preprocessing, system programming, and optimization.
+Time: 3-4 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
----
 
-### Skill: DSA
+### Skill: Java
 
-Step 1: Arrays and Strings  
-Understand array operations and basic string handling.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/arrays-in-c-cpp/
+Java Fundamentals
+Learn Java syntax, variables, and basic programming constructs.
+Time: 2-3 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
-Step 2: Linked Lists  
-Study singly, doubly, and circular linked lists.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/data-structures/linked-list/
+Object-Oriented Programming
+Master OOP concepts including classes, inheritance, and polymorphism.
+Time: 3-4 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
-Step 3: Stacks and Queues  
-Learn about stack, queue, and their applications.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/stack-data-structure/
+Collections Framework
+Understand Java collections, generics, and data structures.
+Time: 2-3 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
-Step 4: Trees and Graphs  
-Explore binary trees, BSTs, and basic graph traversal.  
-Time: 3 days  
-Link: https://www.geeksforgeeks.org/binary-tree-data-structure/
+Exception Handling and I/O
+Learn error handling, file operations, and stream processing.
+Time: 2-3 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
-Step 5: Sorting and Searching  
-Understand algorithms like binary search, quicksort, and mergesort.  
-Time: 3 days  
-Link: https://www.geeksforgeeks.org/sorting-algorithms/
+Advanced Java Features
+Explore multithreading, networking, and modern Java features.
+Time: 4-6 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
 
----
+
+### Skill: Data Structures And Algorithms
+
+Basic Data Structures
+Learn fundamental data structures and their implementations.
+Time: 3-4 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Sorting and Searching
+Master various sorting and searching algorithms.
+Time: 2-3 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Trees and Graphs
+Understand tree and graph data structures and algorithms.
+Time: 4-5 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Dynamic Programming
+Learn dynamic programming techniques and optimization.
+Time: 3-4 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Advanced Algorithms
+Explore advanced algorithmic techniques and problem-solving.
+Time: 4-6 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+
+### Skill: Git
+
+Git Basics
+Learn fundamental Git commands and version control concepts.
+Time: 1-2 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Branching and Merging
+Master Git branching strategies and merge operations.
+Time: 1-2 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Remote Repositories
+Understand working with remote repositories and collaboration.
+Time: 1-2 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Advanced Git Operations
+Learn advanced Git features and workflow optimization.
+Time: 2-3 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Git Workflows and Best Practices
+Master professional Git workflows and team collaboration.
+Time: 1-2 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+
+### Skill: DevOps
+
+DevOps Fundamentals
+Understand DevOps culture, principles, and basic concepts.
+Time: 1-2 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Linux and Command Line
+Master Linux systems administration and shell scripting.
+Time: 3-4 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Version Control and CI/CD
+Learn Git, continuous integration, and deployment pipelines.
+Time: 2-3 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Containerization
+Master Docker and container orchestration technologies.
+Time: 3-4 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Container Orchestration
+Learn Kubernetes and advanced container management.
+Time: 4-6 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Infrastructure as Code
+Master infrastructure automation and cloud provisioning.
+Time: 3-4 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Cloud Platforms
+Learn major cloud platforms and their services.
+Time: 4-6 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Monitoring and Logging
+Implement comprehensive monitoring and observability.
+Time: 2-3 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+
+### Skill: JavaScript
+
+JavaScript Fundamentals
+Learn core JavaScript concepts and syntax.
+Time: 2-3 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+ES6+ Features
+Master modern JavaScript features and syntax.
+Time: 1-2 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Asynchronous JavaScript
+Understand callbacks, promises, and async programming.
+Time: 2-3 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Frontend Frameworks
+Learn popular frontend frameworks and libraries.
+Time: 4-6 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Node.js and Backend
+Explore server-side JavaScript development.
+Time: 3-4 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+
+### Skill: Web Development
+
+HTML Fundamentals
+Learn HTML structure, semantics, and best practices.
+Time: 1 week
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+CSS Styling
+Master CSS for styling and layout.
+Time: 2-3 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+JavaScript Interactivity
+Add dynamic behavior to web pages.
+Time: 3-4 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Frontend Framework
+Learn a modern frontend framework.
+Time: 4-6 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Backend Development
+Understand server-side development.
+Time: 4-6 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Deployment and DevOps
+Learn to deploy and maintain web applications.
+Time: 2-3 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
 
 ### Skill: Machine Learning
 
-Step 1: ML Basics  
-Learn what ML is, types (supervised, unsupervised), and workflows.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/machine-learning/
-
-Step 2: Data Preprocessing  
-Understand feature scaling, missing data, and encoding.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/data-preprocessing-machine-learning/
-
-Step 3: Linear and Logistic Regression  
-Learn regression algorithms with scikit-learn.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/linear-regression-python-implementation/
-
-Step 4: Classification Algorithms  
-Study KNN, Decision Trees, SVM, and Naive Bayes.  
-Time: 3 days  
-Link: https://www.geeksforgeeks.org/supervised-learning/
-
-Step 5: Model Evaluation and Tuning  
-Learn about confusion matrix, cross-validation, and hyperparameter tuning.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/evaluation-machine-learning-models/
-
----
-
-### Skill: Frontend Development
-
-Step 1: HTML & CSS
-Description: Learn the structure (HTML) and styling (CSS) of web pages.
-Estimated Time: 3 days
-Link: https://www.freecodecamp.org/learn
-
-Step 2: JavaScript Basics
-Description: Master the fundamentals of JavaScript – variables, loops, functions, and DOM.
-Estimated Time: 4 days
-Link: https://javascript.info/
-
-Step 3: Responsive Design
-Description: Learn Flexbox, Grid, and media queries for mobile-friendly design.
-Estimated Time: 2 days
-Link: https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout
-
-Step 4: Modern JavaScript (ES6+)
-Description: Explore arrow functions, promises, async/await, modules, and classes.
-Estimated Time: 3 days
-Link: https://exploringjs.com/es6/
-
-Step 5: React Framework
-Description: Understand components, props, state, hooks, and JSX with React.
-Estimated Time: 5 days
-Link: https://reactjs.org/learn
-
-Step 6: Build Frontend Projects
-Description: Create interactive UIs like to-do apps, calculators, weather dashboards.
-Estimated Time: 5 days
-Link: https://github.com/topics/frontend-project
-
-Step 7: Version Control & Deployment
-Description: Learn Git, GitHub, and deploy sites using Netlify or Vercel.
-Estimated Time: 2 days
-Link: https://www.netlify.com/
-
----
-
-### Skill: Backend Development
-
-Step 1: Intro to Backend
-Description: Understand the role of backend, databases, and APIs in web applications.
-Estimated Time: 2 days
-Link: https://roadmap.sh/backend
-
-Step 2: Language Basics (Node.js / Python / Java)
-Description: Pick one backend language and get comfortable with syntax and concepts.
-Estimated Time: 3 days
-Link: https://www.codecademy.com/
-
-Step 3: REST APIs
-Description: Learn to create and consume RESTful APIs.
-Estimated Time: 3 days
-Link: https://www.restapitutorial.com/
-
-Step 4: Database Integration
-Description: Work with databases (SQL or NoSQL) and understand CRUD operations.
-Estimated Time: 3 days
-Link: https://www.mongodb.com/
-
-Step 5: Authentication & Security
-Description: Implement login systems and basic auth using JWT, OAuth, etc.
-Estimated Time: 3 days
-Link: https://auth0.com/learn/
-
-Step 6: Backend Frameworks
-Description: Use frameworks like Express, Flask, or Spring Boot for clean backend architecture.
-Estimated Time: 4 days
-Link: https://expressjs.com/
-
-Step 7: Projects
-Description: Build APIs for blogs, todo apps, or authentication systems.
-Estimated Time: 5 days
-Link: https://github.com/topics/backend-project
-
----
-
-### Skill: React
-Step 1: React Fundamentals  
-Understand JSX, components, and props.  
-Time: 2 days  
-Link: https://reactjs.org/docs/hello-world.html
-
-Step 2: State and Lifecycle  
-Use `useState`, `useEffect`, and class component lifecycle methods.  
-Time: 2 days  
-Link: https://reactjs.org/docs/state-and-lifecycle.html
-
-Step 3: Routing with React Router  
-Implement navigation and dynamic routes.  
-Time: 2 days  
-Link: https://reactrouter.com/en/main/start/tutorial
-
-Step 4: Forms and Input Handling  
-Handle user inputs using controlled/uncontrolled components.  
-Time: 2 days  
-Link: https://reactjs.org/docs/forms.html
-
-Step 5: Context and Hooks  
-Manage state globally using Context API and custom hooks.  
-Time: 3 days  
-Link: https://reactjs.org/docs/hooks-intro.html
-
----
-
-### Skill: JavaScript
-Step 1: JS Syntax & Basics  
-Learn variables, conditionals, and basic operations.  
-Time: 2 days  
-Link: https://www.w3schools.com/js/
-
-Step 2: Functions & Scope  
-Understand how to write functions and their scope rules.  
-Time: 2 days  
-Link: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions
-
-Step 3: Arrays and Objects  
-Manipulate arrays, objects, and learn their methods.  
-Time: 2 days  
-Link: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects
-
-Step 4: Async JavaScript  
-Learn about Promises, async/await, and callbacks.  
-Time: 2 days  
-Link: https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous
-
-Step 5: ES6+ Features  
-Master new features like destructuring, arrow functions, and modules.  
-Time: 2 days  
-Link: https://www.javascripttutorial.net/es6/
-
----
-
-### Skill: Node.js
-Step 1: Node.js Basics  
-Understand Node.js runtime, REPL, and built-in modules.  
-Time: 2 days  
-Link: https://nodejs.org/en/docs
-
-Step 2: File System and Events  
-Work with the `fs` module and event-driven programming.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/node-js-fs-module/
-
-Step 3: Creating Servers  
-Create web servers using the `http` module and Express.  
-Time: 2 days  
-Link: https://www.geeksforgeeks.org/node-js-web-server/
-
-Step 4: Middleware and Routing  
-Use Express middleware and define routes for APIs.  
-Time: 2 days  
-Link: https://expressjs.com/en/guide/routing.html
-
-Step 5: Databases & Deployment  
-Connect to MongoDB and deploy on services like Render/Heroku.  
-Time: 3 days  
-Link: https://www.mongodb.com/languages/mern-stack-tutorial
-
----
-
-### Skill: Full Stack Development
-
-Step 1: Frontend Basics
-Description: Learn HTML, CSS, JS, and a frontend framework like React.
-Estimated Time: 5 days
-Link: https://frontendmasters.com/
-
-Step 2: Backend Foundations
-Description: Learn backend languages, REST API design, and database basics.
-Estimated Time: 5 days
-Link: https://roadmap.sh/backend
-
-Step 3: Database Design
-Description: Understand schema design, relationships, indexes, and query optimization.
-Estimated Time: 3 days
-Link: https://www.geeksforgeeks.org/dbms/
-
-Step 4: Authentication & Authorization
-Description: Implement secure login, JWT tokens, and session management.
-Estimated Time: 3 days
-Link: https://auth0.com/docs
-
-Step 5: DevOps & Deployment
-Description: Use GitHub, Docker, CI/CD, and deploy using services like Heroku, Vercel, or AWS.
-Estimated Time: 4 days
-Link: https://roadmap.sh/devops
-
-Step 6: Full Stack Project
-Description: Build a complete app (frontend + backend + DB + deployment), e.g., blog or e-commerce app.
-Estimated Time: 6 days
-Link: https://github.com/topics/fullstack-project
-
-Step 7: Optimization & Best Practices
-Description: Learn performance tuning, code splitting, SEO, and error handling.
-Estimated Time: 3 days
-Link: https://web.dev/
-
----
-
-### Skill: Operating Systems
-
-Step 1: Introduction to Operating Systems  
-Description: Understand the basic purpose and functions of an operating system.  
-Estimated Time: 2 days  
-Link: https://www.geeksforgeeks.org/introduction-of-operating-system-set-1/
-
-Step 2: Process Management  
-Description: Learn about processes, threads, context switching, and CPU scheduling algorithms.  
-Estimated Time: 3 days  
-Link: https://www.javatpoint.com/process-scheduling
-
-Step 3: Memory Management  
-Description: Study memory allocation techniques, paging, segmentation, and virtual memory.  
-Estimated Time: 3 days  
-Link: https://www.geeksforgeeks.org/memory-management-in-operating-system/
-
-Step 4: File System Management  
-Description: Explore how files are stored, accessed, and managed in operating systems.  
-Estimated Time: 2 days  
-Link: https://www.studytonight.com/operating-system/os-file-system
-
-Step 5: Synchronization and Deadlocks  
-Description: Understand race conditions, critical sections, and classic synchronization problems.  
-Estimated Time: 3 days  
-Link: https://www.geeksforgeeks.org/deadlock-in-operating-system/
-
-Step 6: I/O Systems and Device Management  
-Description: Learn how operating systems manage devices and I/O operations.  
-Estimated Time: 2 days  
-Link: https://www.tutorialspoint.com/operating_system/os_io_hardware.htm
-
-Step 7: Case Studies and OS Internals  
-Description: Analyze real OS implementations (Linux/Windows), system calls, and architecture.  
-Estimated Time: 3 days  
-Link: https://www.tldp.org/LDP/tlk/tlk.html
-
----
-
-Skill: Design and Analysis of Algorithms (DAA)
-
-Step 1: Introduction to DAA  
-Description: Understand algorithm complexity and asymptotic notations.  
-Estimated Time: 2 days  
-Link: https://www.javatpoint.com/daa-introduction
-
-Step 2: Divide and Conquer  
-Description: Learn merge sort, quick sort, binary search, and its recurrence.  
-Estimated Time: 2 days  
-Link: https://www.geeksforgeeks.org/divide-and-conquer/
-
-Step 3: Greedy Algorithms  
-Description: Study greedy paradigms through examples like activity selection, Huffman coding.  
-Estimated Time: 2 days  
-Link: https://www.programiz.com/dsa/greedy-algorithm
-
-Step 4: Dynamic Programming  
-Description: Master overlapping subproblems and optimal substructure via examples.  
-Estimated Time: 3 days  
-Link: https://cp-algorithms.com/dynamic_programming/
-
-Step 5: Backtracking and Branch & Bound  
-Description: Understand N-Queens, subset sum, and TSP.  
-Estimated Time: 3 days  
-Link: https://www.geeksforgeeks.org/backtracking-introduction/
-
-Step 6: Graph Algorithms  
-Description: Implement Dijkstra’s, Floyd-Warshall, Prim’s, and Kruskal’s algorithms.  
-Estimated Time: 3 days  
-Link: https://www.interviewbit.com/courses/programming/topics/graph/
-
-Step 7: NP Problems  
-Description: Learn about NP-completeness, reductions, and P vs NP.  
-Estimated Time: 2 days  
-Link: https://www.geeksforgeeks.org/np-complete-problems/
-
----
-
-Skill: Computer Networks
-
-Step 1: Network Basics and OSI Model  
-Description: Understand types of networks and the 7 layers of OSI model.  
-Estimated Time: 2 days  
-Link: https://www.geeksforgeeks.org/layers-of-osi-model/
-
-Step 2: Transmission Media and Topologies  
-Description: Study wired/wireless media and network topologies.  
-Estimated Time: 2 days  
-Link: https://www.tutorialspoint.com/data_communication_computer_network/transmission_media.htm
-
-Step 3: TCP/IP and Internet Protocols  
-Description: Learn TCP, UDP, IP, and subnetting.  
-Estimated Time: 3 days  
-Link: https://www.javatpoint.com/tcp-ip-model
-
-Step 4: Network Devices  
-Description: Understand routers, switches, firewalls, and modems.  
-Estimated Time: 2 days  
-Link: https://www.geeksforgeeks.org/network-devices-hub-repeater-switch-bridge-router-gateway/
-
-Step 5: Routing Algorithms  
-Description: Study distance vector and link state routing.  
-Estimated Time: 2 days  
-Link: https://www.javatpoint.com/routing-algorithms-in-computer-networks
-
-Step 6: Application Layer Protocols  
-Description: Learn HTTP, FTP, SMTP, DNS, and DHCP.  
-Estimated Time: 3 days  
-Link: https://developer.mozilla.org/en-US/docs/Web/HTTP
-
-Step 7: Security in Networks  
-Description: Explore encryption, firewalls, and common security threats.  
-Estimated Time: 3 days  
-Link: https://www.geeksforgeeks.org/types-of-network-security/
-
----
-
-Skill: Cybersecurity
-
-Step 1: Introduction to Cybersecurity  
-Description: Understand threats, attacks, and security goals.  
-Estimated Time: 2 days  
-Link: https://www.ibm.com/topics/cybersecurity
-
-Step 2: Network Security Basics  
-Description: Learn about firewalls, proxies, and IDS/IPS systems.  
-Estimated Time: 3 days  
-Link: https://www.geeksforgeeks.org/network-security/
-
-Step 3: Cryptography Fundamentals  
-Description: Study symmetric and asymmetric encryption, hashing, and SSL/TLS.  
-Estimated Time: 3 days  
-Link: https://www.khanacademy.org/computing/computer-science/cryptography
-
-Step 4: Web Security  
-Description: Explore OWASP Top 10 vulnerabilities like XSS, SQL injection, CSRF.  
-Estimated Time: 3 days  
-Link: https://owasp.org/www-project-top-ten/
-
-Step 5: Authentication & Access Control  
-Description: Learn about MFA, biometrics, RBAC, and access protocols.  
-Estimated Time: 2 days  
-Link: https://www.geeksforgeeks.org/authentication-in-computer-network/
-
-Step 6: Ethical Hacking and Pen Testing  
-Description: Use tools like Nmap, Wireshark, Metasploit for analysis.  
-Estimated Time: 4 days  
-Link: https://www.kali.org/tools/
-
-Step 7: Security Compliance and Best Practices  
-Description: Understand policies like ISO, GDPR, NIST, and SOC2.  
-Estimated Time: 2 days  
-Link: https://www.varonis.com/blog/security-standards
-
----
-
-Skill: Object-Oriented Programming (OOPs)
-
-Step 1: Basics of OOP  
-Description: Learn about classes, objects, and basic syntax in your chosen language.  
-Estimated Time: 2 days  
-Link: https://www.programiz.com/java-programming/object-class
-
-Step 2: Encapsulation and Abstraction  
-Description: Understand the principles and apply them in small programs.  
-Estimated Time: 2 days  
-Link: https://www.javatpoint.com/encapsulation
-
-Step 3: Inheritance  
-Description: Study single, multilevel, and multiple inheritance.  
-Estimated Time: 2 days  
-Link: https://www.geeksforgeeks.org/inheritance-in-java/
-
-Step 4: Polymorphism  
-Description: Implement method overloading and overriding.  
-Estimated Time: 2 days  
-Link: https://www.geeksforgeeks.org/polymorphism-in-java/
-
-Step 5: Interfaces and Abstract Classes  
-Description: Explore interface-based designs and abstract methods.  
-Estimated Time: 2 days  
-Link: https://www.programiz.com/java-programming/abstract-class-interface
-
-Step 6: SOLID Principles  
-Description: Learn and apply design principles for clean code architecture.  
-Estimated Time: 3 days  
-Link: https://medium.com/@joeclever/solid-principles-explained-21f5d5a9c6f0
-
-Step 7: Real-World Project  
-Description: Build a project like a Library Management System using full OOP concepts.  
-Estimated Time: 3 days  
-Link: https://www.geeksforgeeks.org/library-management-system-using-cpp/
-
----
-
-### Skill: DBMS (Databases)
-
-Step 1: Introduction to Databases  
-Description: Understand what a database is, the need for databases, and real-world applications. Learn about different types of databases (Relational, NoSQL).  
-Estimated Time: 1 day  
-Link: https://www.geeksforgeeks.org/introduction-of-database/
-
-Step 2: Relational Database Concepts  
-Description: Learn about tables, rows, columns, schemas, and how relational models work. Understand concepts like keys, constraints, and relationships.  
-Estimated Time: 1 day  
-Link: https://www.javatpoint.com/dbms-data-model
-
-Step 3: SQL Basics  
-Description: Learn the basics of SQL including SELECT, INSERT, UPDATE, DELETE, and filtering data using WHERE clause.  
-Estimated Time: 2 days  
-Link: https://www.w3schools.com/sql/
-
-Step 4: Advanced SQL Queries  
-Description: Learn complex SQL topics such as JOINs, GROUP BY, HAVING, subqueries, and set operations.  
-Estimated Time: 2 days  
-Link: https://www.geeksforgeeks.org/sql-queries/
-
-Step 5: Normalization & Database Design  
-Description: Understand functional dependencies, normalization forms (1NF to 3NF), and how to design efficient database schemas.  
-Estimated Time: 1 day  
-Link: https://www.studytonight.com/dbms/database-normalization.php
-
-Step 6: Transactions and Concurrency Control  
-Description: Learn about transactions, ACID properties, locking, isolation levels, and concurrency problems like deadlocks.  
-Estimated Time: 1.5 days  
-Link: https://www.geeksforgeeks.org/dbms-transactions-and-concurrency-control/
-
-Step 7: Indexing and Query Optimization  
-Description: Learn how indexing works, types of indexes, and how to optimize queries for performance.  
-Estimated Time: 1 day  
-Link: https://use-the-index-luke.com/
-
-Step 8: Stored Procedures and Triggers  
-Description: Learn to create stored procedures, functions, and database triggers for business logic automation.  
-Estimated Time: 1 day  
-Link: https://www.w3schools.com/sql/sql_stored_procedures.asp
-
-Step 9: NoSQL and Modern Databases  
-Description: Explore non-relational databases like MongoDB, Cassandra, and when to use them. Understand document, key-value, columnar, and graph models.  
-Estimated Time: 1.5 days  
-Link: https://www.mongodb.com/nosql-explained
-
-Step 10: Real-World Project and Integration  
-Description: Integrate a database into a full-stack project using any backend tech (like Node.js, Python, Java). Focus on real-time queries, performance tuning, and database backup.  
-Estimated Time: 2-3 days  
-Link: https://www.freecodecamp.org/news/how-to-connect-a-database-to-your-web-app/
-
----
+Mathematics Foundations
+Build strong mathematical foundations for ML.
+Time: 3-4 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8
+
+Python for Data Science
+Master Python libraries for data analysis.
+Time: 2-3 weeks
+Link: https://www.python.org/about/gettingstarted/
+YouTube: https://www.youtube.com/watch?v=kqtD5dpn9C8

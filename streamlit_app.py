@@ -7,11 +7,12 @@ from io import StringIO
 # Import your existing functions from the main file
 # Assuming your main file is named 'roadmap_generator.py'
 from loading_my_model import (
-    load_models, 
-    generate_roadmap, 
-    generate_single_roadmap,
+    load_models,  # Remove this from load_models_cached()
+    generate_roadmap,
     RoadmapEvaluator,
-    semantic_model
+    semantic_model,
+    model,        # Add these to check loaded status
+    tokenizer
 )
 from pdf_mode import generate_roadmap_from_pdf
 
@@ -134,10 +135,55 @@ def load_models_cached():
                 return False
     return True
 
-def display_roadmap(roadmap, title="Generated Learning Roadmap"):
-    """Display the roadmap in a nice formatted way"""
+def display_roadmap(roadmap, skill=None, title="Generated Learning Roadmap"):
     st.markdown(f'<div class="sub-header">{title}</div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="roadmap-container">{roadmap}</div>', unsafe_allow_html=True)
+
+    # Append YouTube link if available
+    youtube_link = None
+    if skill:
+        skill = skill.lower()
+        youtube_playlists = {
+            "python": "https://www.youtube.com/watch?v=_uQrJ0TkZlc",
+            "javascript": "https://www.youtube.com/watch?v=PkZNo7MFNFg",
+            "html": "https://www.youtube.com/watch?v=UB1O30fR-EE",
+            "css": "https://www.youtube.com/watch?v=yfoY53QXEnI",
+            "react": "https://www.youtube.com/watch?v=w7ejDZ8SWv8",
+            "java": "https://www.youtube.com/watch?v=eIrMbAQSU34",
+            "node": "https://www.youtube.com/watch?v=TlB_eWDSMt4",
+            "php": "https://www.youtube.com/watch?v=OK_JCtrrv-c",
+            "sql": "https://www.youtube.com/watch?v=HXV3zeQKqGY",
+            "git": "https://www.youtube.com/watch?v=RGOj5yH7evk",
+            "django": "https://www.youtube.com/watch?v=F5mRW0jo-U4",
+            "flask": "https://www.youtube.com/watch?v=Z1RJmh_OqeA",
+            "angular": "https://www.youtube.com/watch?v=3qBXWUpoPHo",
+            "vue": "https://www.youtube.com/watch?v=qZXt1Aom3Cs",
+            "bootstrap": "https://www.youtube.com/watch?v=4sosXZsdy-s",
+            "jquery": "https://www.youtube.com/watch?v=hMxGhHNOkCU",
+            "mongodb": "https://www.youtube.com/watch?v=ExcRbA7fy_A",
+            "express": "https://www.youtube.com/watch?v=L72fhGm1tfE",
+            "typescript": "https://www.youtube.com/watch?v=BwuLxPH8IDs",
+            "docker": "https://www.youtube.com/watch?v=fqMOX6JJhGo",
+            "aws": "https://www.youtube.com/watch?v=3hLmDS179YE",
+            "machine learning": "https://www.youtube.com/watch?v=ukzFI9rgwfU",
+            "data science": "https://www.youtube.com/watch?v=ua-CiDNNj30",
+            "web development": "https://www.youtube.com/watch?v=UB1O30fR-EE",
+        }
+
+        youtube_link = youtube_playlists.get(skill)
+
+    # Display roadmap with preserved line breaks
+    st.markdown(
+        f'<div class="roadmap-container"><pre style="white-space: pre-wrap;">{roadmap}</pre></div>',
+        unsafe_allow_html=True
+    )
+
+    # Show clickable YouTube link if available
+    if youtube_link:
+        st.markdown(
+            f"\n\n📺 **Recommended YouTube Playlist:** [Watch Here]({youtube_link})",
+            unsafe_allow_html=True
+        )
+
 
 def display_evaluation(evaluation):
     """Display evaluation metrics in a nice format"""
@@ -253,7 +299,7 @@ def main():
         with col1:
             skill_input = st.text_input(
                 "What would you like to learn?", 
-                placeholder="e.g., Python, Web Development, Machine Learning, React, etc.",
+                placeholder="e.g., Python, Web Development, React, etc.",
                 help="Enter any programming language, framework, or technology"
             )
         
@@ -264,7 +310,7 @@ def main():
         # Popular skills quick selection
         st.write("**Quick Select Popular Skills:**")
         skill_cols = st.columns(6)
-        popular_skills = ["Python", "JavaScript", "React", "Machine Learning", "Web Development", "Data Science"]
+        popular_skills = ["Python", "JavaScript", "React", "Web Development"]
         
         for i, skill in enumerate(popular_skills):
             with skill_cols[i]:
@@ -295,7 +341,7 @@ def main():
                                 evaluation = evaluator.evaluate_roadmap(skill_input, roadmap)
                                 st.session_state.current_evaluation = evaluation
                             
-                            st.markdown('<div class="success-message">✅ Roadmap generated successfully!</div>', unsafe_allow_html=True)
+                            st.markdown('<div class="success-message">Roadmap generated successfully!</div>', unsafe_allow_html=True)
                         
                     except Exception as e:
                         st.markdown(f'<div class="error-message">❌ Error generating roadmap: {str(e)}</div>', unsafe_allow_html=True)
@@ -336,7 +382,7 @@ def main():
                 st.write(f"- **{key}:** {value}")
             
             # Generate roadmap button
-            if st.button("📄 Generate PDF Roadmap", type="primary"):
+            if st.button("Generate Roadmap", type="primary"):
                 if not st.session_state.models_loaded:
                     st.error("❌ Please load the models first using the sidebar.")
                 else:
@@ -401,7 +447,7 @@ def main():
     st.markdown(
         """
         <div style='text-align: center; color: #666; padding: 20px;'>
-            Made with ❤️ using Streamlit | Powered by AI
+            Made using Streamlit
         </div>
         """, 
         unsafe_allow_html=True

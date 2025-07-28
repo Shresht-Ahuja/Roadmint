@@ -9,6 +9,12 @@ from transformers import BitsAndBytesConfig
 from dotenv import load_dotenv
 import os
 from huggingface_hub import login
+from datetime import datetime
+from typing import List, Dict, Tuple, Optional
+import json
+
+# Import the web link finder
+from web_crawling import find_links_for_topic, batch_find_links
 
 # Global variables for models (will be loaded once)
 model = None
@@ -196,6 +202,93 @@ def extract_roadmap_only(generated_text, prompt):
     
     return '\n'.join(roadmap_lines_clean).strip()
 
+def enhance_roadmap_with_real_links(roadmap_text, skill):
+    """Enhance generated roadmap with real web links"""
+    print(f"🔗 Enhancing roadmap with real links for: {skill}")
+    
+    # Parse the roadmap to extract topics
+    lines = roadmap_text.split('\n')
+    enhanced_lines = []
+    topics_for_batch_search = []
+    current_topic = None
+    
+    i = 0
+    while i < len(lines):
+        line = lines[i].strip()
+        
+        if not line:
+            enhanced_lines.append('')
+            i += 1
+            continue
+        
+        # Check if this is a topic title (not starting with Time: or Link:)
+        if not line.startswith(('Time:', 'Link:', 'YouTube:')):
+            current_topic = line
+            topics_for_batch_search.append(line)
+            enhanced_lines.append(line)
+        elif line.startswith('Time:'):
+            enhanced_lines.append(line)
+        elif line.startswith('Link:'):
+            # Skip the old link, we'll replace it
+            pass
+        elif line.startswith('YouTube:'):
+            # Skip the old YouTube link, we'll replace it
+            pass
+        else:
+            enhanced_lines.append(line)
+        
+        i += 1
+    
+    # Batch search for links
+    if topics_for_batch_search:
+        print(f"🔍 Searching for links for {len(topics_for_batch_search)} topics...")
+        topic_links = batch_find_links(topics_for_batch_search)
+        
+        # Rebuild the roadmap with real links
+        final_lines = []
+        current_topic_idx = 0
+        
+        i = 0
+        while i < len(enhanced_lines):
+            line = enhanced_lines[i].strip()
+            
+            if not line:
+                final_lines.append('')
+                i += 1
+                continue
+            
+            # If this is a topic title
+            if not line.startswith(('Time:', 'Link:', 'YouTube:')) and current_topic_idx < len(topics_for_batch_search):
+                topic = topics_for_batch_search[current_topic_idx]
+                final_lines.append(line)
+                
+                # Look for the description line
+                if i + 1 < len(enhanced_lines) and enhanced_lines[i + 1].strip() and not enhanced_lines[i + 1].startswith(('Time:', 'Link:', 'YouTube:')):
+                    final_lines.append(enhanced_lines[i + 1])
+                    i += 1
+                
+                # Look for time estimate
+                if i + 1 < len(enhanced_lines) and enhanced_lines[i + 1].startswith('Time:'):
+                    final_lines.append(enhanced_lines[i + 1])
+                    i += 1
+                
+                # Add the real links
+                if topic in topic_links:
+                    final_lines.append(f"Link: {topic_links[topic]['tutorial']}")
+                    final_lines.append(f"YouTube: {topic_links[topic]['youtube']}")
+                
+                current_topic_idx += 1
+            else:
+                # For other lines (like descriptions, time estimates not yet processed)
+                if not line.startswith(('Link:', 'YouTube:')):
+                    final_lines.append(line)
+            
+            i += 1
+        
+        return '\n'.join(final_lines)
+    
+    return roadmap_text
+
 def _generate_with_params(skill, max_tokens, temperature, do_sample):
     """Internal function to generate with specific parameters"""
     global model, tokenizer, device
@@ -294,32 +387,41 @@ def _generate_fallback_roadmap(skill):
     """Generate a basic fallback roadmap if model fails"""
     skill_title = skill.title()
     
+    # Get real links for the fallback roadmap
+    print(f"🔗 Getting links for fallback roadmap: {skill}")
+    tutorial_link, youtube_link = find_links_for_topic(skill)
+    
     return f"""{skill_title} Fundamentals
 Learn the basic concepts and syntax of {skill}.
 Time: 3-5 days
-Link: https://www.w3schools.com/{skill.lower()}/
+Link: {tutorial_link}
+YouTube: {youtube_link}
 
 Core Features
 Understand the main features and capabilities of {skill}.
-Time: 4-6 days  
-Link: https://www.geeksforgeeks.org/{skill.lower()}/
+Time: 4-6 days
+Link: {tutorial_link}
+YouTube: {youtube_link}
 
 Practical Projects
 Build small projects to apply your {skill} knowledge.
 Time: 7-10 days
-Link: https://github.com/topics/{skill.lower()}
+Link: {tutorial_link}
+YouTube: {youtube_link}
 
 Advanced Concepts
 Explore more advanced topics and best practices in {skill}.
 Time: 5-7 days
-Link: https://developer.mozilla.org/
+Link: {tutorial_link}
+YouTube: {youtube_link}
 
 Real-world Applications
 Work on larger projects and understand industry practices.
 Time: 2-3 weeks
-Link: https://www.freecodecamp.org/"""
+Link: {tutorial_link}
+YouTube: {youtube_link}"""
 
-def generate_roadmap(skill, max_attempts=3):
+def generate_roadmap(skill, max_attempts=3, enhance_links=True):
     """Generate a learning roadmap for the given skill with fallback strategies"""
     global model, tokenizer
     
@@ -346,7 +448,14 @@ def generate_roadmap(skill, max_attempts=3):
 
             # Validate the output
             if _is_valid_roadmap(roadmap, skill):
-                return _fix_roadmap_formatting(roadmap)
+                formatted_roadmap = _fix_roadmap_formatting(roadmap)
+                
+                # Enhance with real links if requested
+                if enhance_links:
+                    enhanced_roadmap = enhance_roadmap_with_real_links(formatted_roadmap, skill)
+                    return enhanced_roadmap
+                
+                return formatted_roadmap
             else:
                 print(f"   Attempt {attempt + 1} produced invalid output, trying again...")
                 
@@ -354,147 +463,415 @@ def generate_roadmap(skill, max_attempts=3):
             print(f"   Attempt {attempt + 1} failed: {e}")
             continue
     
-    # If all attempts fail, return a basic template
+    # If all attempts fail, return a basic template with real links
     print("   All attempts failed, generating fallback roadmap...")
     return _generate_fallback_roadmap(skill)
+
+def generate_roadmap_for_pdf_mode(skill_or_prompt, enhance_links=True):
+    """
+    Generate roadmap specifically for PDF mode with enhanced link finding
+    This function can handle both individual skills and full prompts from PDF processing
+    """
+    if "You are an AI assistant" in skill_or_prompt:
+        # This is a full prompt from PDF mode
+        # Extract the topics from the prompt
+        lines = skill_or_prompt.split('\n')
+        topics = []
+        for line in lines:
+            if line.strip().startswith('- '):
+                topic = line.strip()[2:]  # Remove '- '
+                topics.append(topic)
+        
+        if not topics:
+            return "❌ No topics found in the prompt."
+        
+        # Generate structured roadmap for each topic
+        roadmap_parts = []
+        
+        if enhance_links:
+            # Batch find links for all topics
+            print(f"🔍 Finding links for {len(topics)} topics...")
+            topic_links = batch_find_links(topics)
+        
+        for topic in topics:
+            # Generate a simple structured block for each topic
+            topic_clean = topic.strip()
+            
+            if enhance_links and topic_clean in topic_links:
+                tutorial_link = topic_links[topic_clean]['tutorial']
+                youtube_link = topic_links[topic_clean]['youtube']
+            else:
+                tutorial_link, youtube_link = find_links_for_topic(topic_clean)
+            
+            # Create structured roadmap block
+            roadmap_block = f"""{topic_clean}
+Learn the fundamentals and practical applications of {topic_clean.lower()}.
+Time: 3-5 days
+Link: {tutorial_link}
+YouTube: {youtube_link}"""
+            
+            roadmap_parts.append(roadmap_block)
+        
+        return '\n\n'.join(roadmap_parts)
+    
+    else:
+        # This is a single skill, use the regular generation method
+        return generate_roadmap(skill_or_prompt, enhance_links=enhance_links)
 
 class RoadmapEvaluator:
     """Comprehensive Roadmap Evaluation System"""
     
-    def __init__(self, semantic_model):
-        self.semantic_model = semantic_model
+    def __init__(self, semantic_model_name='all-MiniLM-L6-v2', baseline_model_name=None):
+        """
+        Initialize the evaluator with semantic similarity model and optional baseline model
+        
+        Args:
+            semantic_model_name: Name of the sentence transformer model for similarity
+            baseline_model_name: Name of the baseline model to compare against (optional)
+        """
+        self.semantic_model = SentenceTransformer(semantic_model_name)
+        self.baseline_model = None
+        self.baseline_tokenizer = None
+        
+        if baseline_model_name:
+            self.load_baseline_model(baseline_model_name)
     
-    def extract_steps(self, text):
-        """Extract steps from roadmap text"""
+    def load_baseline_model(self, model_name: str):
+        """Load a baseline model for comparison"""
+        print(f"Loading baseline model: {model_name}")
+        
+        quant_config = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_compute_dtype=torch.float16,
+            bnb_4bit_use_double_quant=True,
+            bnb_4bit_quant_type="nf4",
+        )
+        
+        self.baseline_tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.baseline_model = AutoModelForCausalLM.from_pretrained(
+            model_name,
+            quantization_config=quant_config,
+            device_map="auto"
+        )
+        
+        if self.baseline_tokenizer.pad_token is None:
+            self.baseline_tokenizer.pad_token = self.baseline_tokenizer.eos_token
+        
+        print("✅ Baseline model loaded successfully!")
+    
+    def generate_baseline_roadmap(self, skill: str, instruction_prompt: str) -> str:
+        """Generate roadmap using baseline model"""
+        if not self.baseline_model or not self.baseline_tokenizer:
+            raise ValueError("Baseline model not loaded. Call load_baseline_model() first.")
+        
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        
+        prompt = instruction_prompt.format(skill=skill)
+        
+        inputs = self.baseline_tokenizer(prompt, return_tensors="pt", truncation=True, max_length=1200)
+        inputs = {k: v.to(device) for k, v in inputs.items()}
+        
+        generation_kwargs = {
+            'input_ids': inputs['input_ids'],
+            'attention_mask': inputs['attention_mask'],
+            'max_new_tokens': 400,
+            'temperature': 0.1,
+            'do_sample': False,
+            'pad_token_id': self.baseline_tokenizer.eos_token_id,
+            'eos_token_id': self.baseline_tokenizer.eos_token_id,
+            'repetition_penalty': 1.1,
+        }
+        
+        with torch.no_grad():
+            outputs = self.baseline_model.generate(**generation_kwargs)
+        
+        generated_text = self.baseline_tokenizer.decode(outputs[0], skip_special_tokens=True)
+        response = generated_text[len(prompt):].strip()
+        return self._clean_generated_text(response)
+    
+    def _clean_generated_text(self, text: str) -> str:
+        """Clean generated text to extract only the roadmap"""
+        lines = text.split('\n')
+        roadmap_lines = []
+        
+        for line in lines:
+            line = line.strip()
+            if line.startswith("### Input:") or (line.startswith("I want to learn") and roadmap_lines):
+                break
+            if line:
+                roadmap_lines.append(line)
+        
+        return '\n'.join(roadmap_lines).strip()
+    
+    def extract_roadmap_steps(self, text: str) -> List[Dict]:
+        """Extract structured steps from roadmap text"""
         steps = []
         current_step = {}
-
-        for line in text.split('\n'):
-            line = line.strip()
-            if not line:
-                continue
-
-            if not line.startswith(('Time:', 'Link:')):
-                # New step begins
-                if current_step:
-                    steps.append(current_step)
-                current_step = {'title': line}
-            elif line.startswith('Time:'):
-                current_step['time'] = line
-            elif line.startswith('Link:'):
-                current_step['link'] = line
-            elif line and 'title' in current_step and 'description' not in current_step:
-                current_step['description'] = line
-
-        if current_step:
-            steps.append(current_step)
-
-        return steps
-    
-    def structure_score(self, output):
-        """Evaluate the structural quality of the roadmap"""
-        lines = [line.strip() for line in output.split('\n') if line.strip()]
-
-        step_count = 0
+        lines = text.split('\n')
+        
         i = 0
         while i < len(lines):
-            # Assume any line not starting with Time or Link is a new step title
-            if not lines[i].startswith(('Time:', 'Link:')):
-                step_count += 1
+            line = lines[i].strip()
+            
+            if not line:
+                i += 1
+                continue
+            
+            # New step starts when we find a line that isn't a metadata line
+            if not line.startswith(('Time:', 'Link:', 'YouTube:')):
+                if current_step:  # Save previous step if exists
+                    steps.append(current_step)
+                current_step = {'title': line}
+                
+                # Check if next line is description
+                if i + 1 < len(lines) and lines[i + 1].strip() and not lines[i + 1].startswith(('Time:', 'Link:', 'YouTube:')):
+                    current_step['description'] = lines[i + 1].strip()
+                    i += 1  # Skip the description line
+            elif line.startswith('Time:'):
+                current_step['time'] = line.replace('Time:', '').strip()
+            elif line.startswith('Link:'):
+                current_step['link'] = line.replace('Link:', '').strip()
+            
             i += 1
+        
+        # Add the last step if it exists
+        if current_step:
+            steps.append(current_step)
+        
+        return steps
+    
+    def calculate_structure_score(self, roadmap: str) -> Dict:
+        """Evaluate the structural quality of the roadmap"""
+        steps = self.extract_roadmap_steps(roadmap)
 
-        has_descriptions = len([line for line in lines if line and not line.startswith(('Time:', 'Link:'))])
-        has_time_estimates = len([line for line in lines if line.startswith('Time:')])
-        has_links = len([line for line in lines if line.startswith('Link:')])
+        if not steps:
+            return {
+                'total_steps': 0,
+                'complete_steps': 0,
+                'completeness_ratio': 0.0,
+                'has_descriptions': 0,
+                'has_time_estimates': 0,
+                'has_links': 0,
+                'avg_title_length': 0,
+                'avg_description_length': 0
+            }
 
-        steps = self.extract_steps(output)
-        complete_steps = sum(1 for step in steps if all(key in step for key in ['title', 'description', 'time', 'link']))
+        complete_steps = 0
+        has_descriptions = 0
+        has_time_estimates = 0
+        has_links = 0
+        title_lengths = []
+        description_lengths = []
 
-        scores = {
-            'step_count': step_count,
+        for step in steps:
+            # A step is complete if it has title, description, and time
+            if all(key in step for key in ['title', 'description', 'time']):
+                complete_steps += 1
+
+            if 'description' in step:
+                has_descriptions += 1
+                description_lengths.append(len(step['description']))
+
+            if 'time' in step:
+                has_time_estimates += 1
+
+            if 'link' in step:
+                has_links += 1
+
+            if 'title' in step:
+                title_lengths.append(len(step['title']))
+
+        return {
+            'total_steps': len(steps),
+            'complete_steps': complete_steps,
+            'completeness_ratio': complete_steps / len(steps) if steps else 0.0,
             'has_descriptions': has_descriptions,
             'has_time_estimates': has_time_estimates,
             'has_links': has_links,
-            'proper_formatting': True,  # Placeholder; optionally check spacing or line order
-            'completeness_ratio': complete_steps / len(steps) if steps else 0,
-            'total_steps': len(steps)
+            'avg_title_length': np.mean(title_lengths) if title_lengths else 0,
+            'avg_description_length': np.mean(description_lengths) if description_lengths else 0
         }
-
-        return scores
     
-    def semantic_similarity_score(self, model_output, reference):
-        """Calculate semantic similarity between model output and reference"""
-        if not reference:
+    def calculate_semantic_similarity(self, text1: str, text2: str) -> float:
+        """Calculate semantic similarity between two roadmaps"""
+        steps1 = self.extract_roadmap_steps(text1)
+        steps2 = self.extract_roadmap_steps(text2)
+        
+        if not steps1 or not steps2:
             return 0.0
         
-        # Extract steps without relying on 'Step X:' prefix
-        model_steps = self.extract_steps(model_output)
-        ref_steps = self.extract_steps(reference)
+        # Combine title and description for better semantic representation
+        def get_step_text(step):
+            text_parts = []
+            if 'title' in step:
+                text_parts.append(step['title'])
+            if 'description' in step:
+                text_parts.append(step['description'])
+            return ' '.join(text_parts)
         
-        if not model_steps or not ref_steps:
+        texts1 = [get_step_text(step) for step in steps1 if get_step_text(step).strip()]
+        texts2 = [get_step_text(step) for step in steps2 if get_step_text(step).strip()]
+        
+        if not texts1 or not texts2:
             return 0.0
         
-        # Use descriptions or fallback to titles
-        model_descriptions = [step.get('description', step.get('title', '')) for step in model_steps]
-        ref_descriptions = [step.get('description', step.get('title', '')) for step in ref_steps]
+        # Get embeddings
+        embeddings1 = self.semantic_model.encode(texts1)
+        embeddings2 = self.semantic_model.encode(texts2)
         
-        model_descriptions = [desc for desc in model_descriptions if desc.strip()]
-        ref_descriptions = [desc for desc in ref_descriptions if desc.strip()]
+        # Calculate similarity matrix
+        similarity_matrix = cosine_similarity(embeddings1, embeddings2)
         
-        if not model_descriptions or not ref_descriptions:
-            return 0.0
-        
-        model_embeddings = self.semantic_model.encode(model_descriptions)
-        ref_embeddings = self.semantic_model.encode(ref_descriptions)
-        
-        similarity_matrix = cosine_similarity(model_embeddings, ref_embeddings)
+        # For each step in roadmap1, find best match in roadmap2
         max_similarities = np.max(similarity_matrix, axis=1)
         
-        return np.mean(max_similarities)
+        return float(np.mean(max_similarities))
     
-    def content_coverage_score(self, model_output, reference):
-        """Evaluate how well the model covers key technical terms"""
+    def calculate_content_coverage(self, model_output: str, reference: str) -> Dict:
+        """Calculate content coverage metrics"""
         if not reference:
-            return 0.0
+            return {'coverage_ratio': 0.0, 'unique_terms': 0, 'covered_terms': 0}
         
-        # Extract technical terms (capitalized words, common tech terms)
-        tech_pattern = r'\b(?:[A-Z][a-z]*|HTML|CSS|JavaScript|Python|API|SQL|Git|JSON|XML|HTTP|HTTPS|REST|OOP|MVC|CRUD|JWT|OAuth|Docker|AWS|React|Angular|Vue|Node|Express|Django|Flask|Spring|Laravel|PHP|Ruby|Java|C\+\+|C#|Go|Rust|Swift|Kotlin|Dart|TypeScript|MongoDB|PostgreSQL|MySQL|Redis|GraphQL|Webpack|Babel|ESLint|Jest|Cypress|Selenium|Jenkins|Travis|GitHub|GitLab|Bitbucket|VSCode|IntelliJ|Eclipse|Xcode|Android|iOS|Flutter|React Native|Ionic|PhoneGap|Cordova|Electron|Bootstrap|Tailwind)\b'
+        # Extract technical terms and concepts
+        tech_pattern = r'\b(?:[A-Z][a-z]*|HTML|CSS|JavaScript|Python|API|SQL|Git|JSON|XML|HTTP|HTTPS|REST|OOP|MVC|CRUD|JWT|OAuth|Docker|AWS|React|Angular|Vue|Node|Express|Django|Flask|Spring|Laravel|PHP|Ruby|Java|C\+\+|C#|Go|Rust|Swift|Kotlin|Dart|TypeScript|MongoDB|PostgreSQL|MySQL|Redis|GraphQL|Webpack|Babel|ESLint|Jest|Cypress|Selenium|Jenkins|Travis|GitHub|GitLab|Bitbucket|VSCode|IntelliJ|Eclipse|Xcode|Android|iOS|Flutter|React Native|Ionic|PhoneGap|Cordova|Electron|Bootstrap|Tailwind|NumPy|Pandas|Matplotlib|Scikit|TensorFlow|PyTorch|Keras|OpenCV|Flask|FastAPI|Jupyter|Anaconda|Pip|Conda|Virtual|Environment)\b'
         
-        model_terms = set(re.findall(tech_pattern, model_output))
-        ref_terms = set(re.findall(tech_pattern, reference))
+        model_terms = set(re.findall(tech_pattern, model_output, re.IGNORECASE))
+        ref_terms = set(re.findall(tech_pattern, reference, re.IGNORECASE))
+        
+        # Convert to lowercase for comparison
+        model_terms = {term.lower() for term in model_terms}
+        ref_terms = {term.lower() for term in ref_terms}
         
         if not ref_terms:
-            return 0.0
+            return {'coverage_ratio': 0.0, 'unique_terms': len(model_terms), 'covered_terms': 0}
         
-        # Calculate coverage ratio
         covered_terms = model_terms.intersection(ref_terms)
         coverage_ratio = len(covered_terms) / len(ref_terms)
         
-        return coverage_ratio
+        return {
+            'coverage_ratio': coverage_ratio,
+            'unique_terms': len(model_terms),
+            'covered_terms': len(covered_terms),
+            'reference_terms': len(ref_terms)
+        }
     
-    def evaluate_roadmap(self, skill, model_output):
-        """Comprehensive evaluation of the generated roadmap"""
-        reference = load_reference_from_master_file(skill)
+    def load_reference_roadmap(self, skill: str, reference_file: str = "reference.txt") -> Optional[str]:
+        """Load reference roadmap from file"""
+        if not os.path.exists(reference_file):
+            return None
         
-        # Structure evaluation
-        structure_scores = self.structure_score(model_output)
+        skill_section = f"### Skill: {skill.strip().title()}"
         
-        # Semantic similarity (if reference exists)
-        semantic_score = self.semantic_similarity_score(model_output, reference) if reference else 0.0
+        with open(reference_file, "r", encoding="utf-8") as f:
+            content = f.read()
         
-        # Content coverage (if reference exists)
-        coverage_score = self.content_coverage_score(model_output, reference) if reference else 0.0
+        start = content.find(skill_section)
+        if start == -1:
+            return None
         
-        evaluation = {
-            'structure': structure_scores,
-            'semantic_similarity': semantic_score,
-            'content_coverage': coverage_score,
-            'has_reference': reference is not None
+        end = content.find("### Skill:", start + 1)
+        section = content[start:end].strip() if end != -1 else content[start:].strip()
+        
+        return "\n".join(line.strip() for line in section.splitlines()[1:]).strip()
+    
+    def comprehensive_evaluation(self, 
+                               skill: str, 
+                               model_output: str, 
+                               instruction_prompt: str = None,
+                               reference_file: str = "reference.txt") -> Dict:
+        """
+        Perform comprehensive evaluation of a generated roadmap
+        
+        Args:
+            skill: The skill being evaluated
+            model_output: Generated roadmap from your model
+            instruction_prompt: Prompt template for baseline comparison
+            reference_file: Path to reference file
+            
+        Returns:
+            Dictionary containing all evaluation metrics
+        """
+        evaluation_results = {
+            'skill': skill,
+            'timestamp': datetime.now().isoformat(),
+            'model_structure': self.calculate_structure_score(model_output),
         }
         
-        return evaluation
+        # Load reference roadmap
+        reference = self.load_reference_roadmap(skill, reference_file)
+        evaluation_results['has_reference'] = reference is not None
+        
+        if reference:
+            # Compare with reference
+            evaluation_results['reference_similarity'] = self.calculate_semantic_similarity(
+                model_output, reference
+            )
+            evaluation_results['content_coverage'] = self.calculate_content_coverage(
+                model_output, reference
+            )
+            evaluation_results['reference_structure'] = self.calculate_structure_score(reference)
+        
+        # Generate baseline comparison if baseline model is available and prompt is provided
+        if self.baseline_model and instruction_prompt:
+            try:
+                baseline_output = self.generate_baseline_roadmap(skill, instruction_prompt)
+                evaluation_results['baseline_output'] = baseline_output
+                evaluation_results['baseline_structure'] = self.calculate_structure_score(baseline_output)
+                evaluation_results['baseline_similarity'] = self.calculate_semantic_similarity(
+                    model_output, baseline_output
+                )
+                
+                # If we have reference, compare baseline to reference too
+                if reference:
+                    evaluation_results['baseline_vs_reference'] = self.calculate_semantic_similarity(
+                        baseline_output, reference
+                    )
+                    evaluation_results['baseline_content_coverage'] = self.calculate_content_coverage(
+                        baseline_output, reference
+                    )
+                
+            except Exception as e:
+                print(f"Warning: Could not generate baseline comparison: {e}")
+                evaluation_results['baseline_error'] = str(e)
+        
+        return evaluation_results
+    
+    def print_evaluation_summary(self, results: Dict):
+        """Print a formatted summary of evaluation results"""
+        print(f"\n📊 Evaluation Summary for: {results['skill']}")
+        print("=" * 60)
+        
+        # Model structure
+        struct = results['model_structure']
+        print(f"🏗️ Model Structure:")
+        print(f"  Steps: {struct['total_steps']}")
+        print(f"  Complete steps: {struct['complete_steps']} ({struct['completeness_ratio']:.1%})")
+        print(f"  Descriptions: {struct['has_descriptions']}")
+        print(f"  Time estimates: {struct['has_time_estimates']}")
+        print(f"  Links: {struct['has_links']}")
 
-def generate_single_roadmap(skill, show_evaluation=True):
+        
+        # Reference comparison
+        if results['has_reference']:
+            print(f"\n📚 Reference Comparison:")
+            print(f"  Similarity to reference: {results['reference_similarity']:.1%}")
+            coverage = results['content_coverage']
+            print(f"  Content coverage: {coverage['coverage_ratio']:.1%}")
+            print(f"  Terms covered: {coverage['covered_terms']}/{coverage['reference_terms']}")
+        
+        # Baseline comparison
+        if 'baseline_similarity' in results:
+            print(f"\n🔄 Baseline Comparison:")
+            print(f"  Similarity to baseline: {results['baseline_similarity']:.1%}")
+            baseline_struct = results['baseline_structure']
+            print(f"  Baseline steps: {baseline_struct['total_steps']}")
+            
+            if results['has_reference']:
+                print(f"  Baseline vs reference: {results['baseline_vs_reference']:.1%}")
+        
+        print("=" * 60)
+
+def generate_single_roadmap(skill, show_evaluation=True, enhance_links=True):
     """Generate roadmap for a single skill (useful for scripting)"""
     global semantic_model
     
@@ -502,21 +879,24 @@ def generate_single_roadmap(skill, show_evaluation=True):
     if model is None:
         load_models()
     
-    evaluator = RoadmapEvaluator(semantic_model)
+    evaluator = RoadmapEvaluator()  # Let it use default model
+    # OR
+    evaluator = RoadmapEvaluator('all-MiniLM-L6-v2')  # Explicit model name
     
     print(f"🔄 Generating roadmap for: {skill}")
-    roadmap = generate_roadmap(skill)
+    roadmap = generate_roadmap(skill, enhance_links=enhance_links)
     
     print(f"\n📚 Learning Roadmap for: {skill.title()}")
     print("="*60)
     print(roadmap)
     
     if show_evaluation:
-        evaluation = evaluator.evaluate_roadmap(skill, roadmap)
-        print(f"\n📊 Evaluation Summary:")
-        print(f"Steps: {evaluation['structure']['total_steps']}")
-        if evaluation['has_reference']:
-            print(f"Similarity: {evaluation['semantic_similarity']:.2%}")
+        evaluation = evaluator.comprehensive_evaluation(
+            skill=skill,
+            model_output=roadmap,
+            instruction_prompt=generate_instruction_prompt(skill)
+        )
+        evaluator.print_evaluation_summary(evaluation)
     
     return roadmap
 
@@ -530,5 +910,5 @@ except:
 if __name__ == "__main__":
     # Load models and run a test
     load_models()
-    test_roadmap = generate_single_roadmap("Python")
+    test_roadmap = generate_single_roadmap("Python", enhance_links=True)
     print("Test completed successfully!")
