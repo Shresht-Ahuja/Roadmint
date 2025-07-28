@@ -6,7 +6,7 @@ This is an AI powered Learning Roadmap Generator that helps students and working
 
 ## Features
 
-- **Search-Based Roadmap Generation**: Enter any skill or topic, and get a customized learning roadmap with direct tutorial and YouTube links.
+- **Input-Based Roadmap Generation**: Enter any skill or topic and get a structured learning roadmap with direct tutorial and YouTube links.
 - **PDF-Based Roadmap Generation**: Upload a PDF (for example your college slides) and get a roadmap for topics extracted from it.
 - **LLM Integration**: Uses a fine-tuned transformer model for generation and understanding.
 
