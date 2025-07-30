@@ -1,8 +1,12 @@
 import streamlit as st
-import os
-import tempfile
+import re
 import torch
 from io import StringIO
+from transformers import AutoTokenizer, AutoModelForCausalLM
+
+from transformers import pipeline
+
+from gemma_loader import generate_gemma_roadmap
 
 # Import your existing functions from the main file
 # Assuming your main file is named 'roadmap_generator.py'
@@ -12,9 +16,8 @@ from loading_my_model import (
     RoadmapEvaluator,
     semantic_model,
     model,        # Add these to check loaded status
-    tokenizer
+    tokenizer,
 )
-from pdf_mode import generate_roadmap_from_pdf
 
 # Set page config
 st.set_page_config(
@@ -42,13 +45,13 @@ st.markdown("""
         padding-bottom: 5px;
     }
     .roadmap-container {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        padding: 25px;
-        border-radius: 15px;
-        border-left: 6px solid #1f77b4;
-        margin: 15px 0;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        color: #000000;
+        line-height: 1.8;
+        padding: 20px;
+    }
+    .roadmap-container br {
+        display: block;
+        margin: 10px 0;
+        content: "";
     }
     .evaluation-box {
         background: linear-gradient(135deg, #e8f4fd 0%, #d1ecf1 100%);
@@ -135,14 +138,8 @@ def load_models_cached():
                 return False
     return True
 
-def display_roadmap(roadmap, skill=None, title="Generated Learning Roadmap"):
-    st.markdown(f'<div class="sub-header">{title}</div>', unsafe_allow_html=True)
-
-    # Append YouTube link if available
-    youtube_link = None
-    if skill:
-        skill = skill.lower()
-        youtube_playlists = {
+def get_youtube_link(skill):
+    youtube_playlists = {
             "python": "https://www.youtube.com/watch?v=_uQrJ0TkZlc",
             "javascript": "https://www.youtube.com/watch?v=PkZNo7MFNFg",
             "html": "https://www.youtube.com/watch?v=UB1O30fR-EE",
@@ -168,21 +165,52 @@ def display_roadmap(roadmap, skill=None, title="Generated Learning Roadmap"):
             "data science": "https://www.youtube.com/watch?v=ua-CiDNNj30",
             "web development": "https://www.youtube.com/watch?v=UB1O30fR-EE",
         }
+    return youtube_playlists.get(skill.lower())
 
-        youtube_link = youtube_playlists.get(skill)
-
-    # Display roadmap with preserved line breaks
+def display_roadmap(roadmap, skill=None, title="Generated Learning Roadmap"):
+    st.markdown(f'<div class="sub-header">{title}</div>', unsafe_allow_html=True)
+    
+    # Process and format the roadmap text
+    formatted_roadmap = []
+    current_step = []
+    
+    for line in roadmap.split('\n'):
+        line = line.strip()
+        if not line:
+            continue
+            
+        # Check if this is a new step (line starts with number or bullet)
+        if re.match(r'^\d+\.|^[•-]', line):
+            if current_step:  # If we have a previous step, add it before starting new one
+                formatted_roadmap.append('\n'.join(current_step))
+                formatted_roadmap.append('')  # Add empty line between steps
+            current_step = [f"**{line}**"]  # Start new step with bold title
+        else:
+            # Add description, time, or link with proper formatting
+            if line.startswith('Time:'):
+                current_step.append(f"{line}")
+            elif line.startswith('Link:'):
+                current_step.append(f"{line.replace('Link: ', '')}")
+            elif line.startswith('YouTube:'):
+                current_step.append(f"[Watch Tutorial]({line.replace('YouTube: ', '')})")
+            else:
+                current_step.append(line)
+    
+    # Add the last step
+    if current_step:
+        formatted_roadmap.append('\n'.join(current_step))
+    
+    # Display with proper formatting
     st.markdown(
-        f'<div class="roadmap-container"><pre style="white-space: pre-wrap;">{roadmap}</pre></div>',
+        f'<div class="roadmap-container">{"<br><br>".join(formatted_roadmap)}</div>',
         unsafe_allow_html=True
     )
-
-    # Show clickable YouTube link if available
-    if youtube_link:
-        st.markdown(
-            f"\n\n📺 **Recommended YouTube Playlist:** [Watch Here]({youtube_link})",
-            unsafe_allow_html=True
-        )
+    
+    # YouTube link if available
+    if skill:
+        youtube_link = get_youtube_link(skill.lower())
+        if youtube_link:
+            st.markdown(f"📺 **Recommended YouTube Playlist:** [Watch Here]({youtube_link})")
 
 
 def display_evaluation(evaluation):
@@ -240,6 +268,93 @@ def display_evaluation(evaluation):
             st.metric("Content Coverage", f"{evaluation.get('content_coverage', {}).get('coverage_ratio', 0):.1%}")
             st.markdown('</div>', unsafe_allow_html=True)
 
+def generate_baseline_roadmap(model_id, skill):
+    """Safe generation with memory management"""
+    try:
+        # Special handling for different model types
+        if model_id == "microsoft/phi-1_5":
+            tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
+            model = AutoModelForCausalLM.from_pretrained(
+                model_id,
+                trust_remote_code=True,
+                torch_dtype=torch.float16,
+                device_map="auto"
+            )
+            prompt = f"""Write a learning roadmap for {skill} with:
+1. Clear steps
+2. Time estimates
+3. Resource links
+
+Example:
+1. Basics
+Learn core concepts
+Time: 2 weeks
+Link: example.com/basics
+
+Now generate for {skill}:"""
+            
+            inputs = tokenizer(prompt, return_tensors="pt", return_attention_mask=False).to("cuda")
+            outputs = model.generate(**inputs, max_new_tokens=400)
+            return tokenizer.decode(outputs[0], skip_special_tokens=True)[len(prompt):]
+        
+        elif model_id == "TinyLlama/TinyLlama-1.1B-Chat-v1.0":
+            generator = pipeline(
+                "text-generation",
+                model=model_id,
+                device=0 if torch.cuda.is_available() else -1,
+                torch_dtype=torch.float16
+            )
+            prompt = f"""<|system|>
+            Generate a learning roadmap for {skill} with:
+            - Numbered steps
+            - Time estimates
+            - Resource links</s>
+            <|user|>
+            Please create the roadmap</s>
+            <|assistant|>"""
+            
+            output = generator(
+                prompt,
+                max_new_tokens=400,
+                temperature=0.7,
+                do_sample=True
+            )
+            return output[0]['generated_text'][len(prompt):].strip()
+        
+        else:  # For GPT-2 and other standard models
+            generator = pipeline(
+                "text-generation",
+                model=model_id,
+                device=0 if torch.cuda.is_available() else -1,
+                model_kwargs={"load_in_4bit": True}  # Quantization for memory
+            )
+            prompt = f"""Create a learning roadmap for {skill} containing:
+1. Step titles
+2. Descriptions
+3. Time required
+4. Resource links
+
+Example:
+1. Introduction
+Learn basic syntax
+Time: 1 week
+Link: example.com/intro
+
+Now generate for {skill}:"""
+            
+            output = generator(
+                prompt,
+                max_length=600,
+                temperature=0.7,
+                num_return_sequences=1
+            )
+            return output[0]['generated_text'][len(prompt):].strip()
+    
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+
+
 def main():
     # Initialize session state
     init_session_state()
@@ -295,7 +410,7 @@ def main():
             """)
     
     # Main content area with tabs
-    tab1, tab2 = st.tabs(["Skill-Based Roadmap", "PDF-Based Roadmap"])
+    tab1, tab2 = st.tabs(["Skill-Based Roadmap", "Model Comparison"])
     
     with tab1:
         st.markdown('<div class="info-message">Enter a skill or technology you want to learn, and I\'ll generate a comprehensive learning roadmap for you!</div>', unsafe_allow_html=True)
@@ -371,87 +486,65 @@ def main():
                 mime="text/plain"
             )
     
+    # Replace the comparison tab section in your Streamlit app with this:
+
     with tab2:
-        st.markdown('<div class="info-message">Upload a PDF textbook or document, and I\'ll extract key topics to generate a structured learning roadmap!</div>', unsafe_allow_html=True)
-        
-        # File upload
-        uploaded_file = st.file_uploader(
-            "Choose a PDF file", 
-            type="pdf",
-            help="Upload a textbook, course material, or any educational PDF"
+        st.markdown('<div class="sub-header">Model Comparison</div>', unsafe_allow_html=True)
+
+        # Skill selection
+        compare_skill = st.selectbox(
+            "Select skill to compare:",
+            ["Python", "JavaScript", "Machine Learning", "Web Development"],
+            key="compare_skill"
         )
-        
-        if uploaded_file is not None:
-            # Display file info
-            file_details = {
-                "Filename": uploaded_file.name,
-                "File size": f"{uploaded_file.size} bytes"
-            }
-            st.write("**File Details:**")
-            for key, value in file_details.items():
-                st.write(f"- **{key}:** {value}")
-            
-            # Generate roadmap button
-            if st.button("Generate Roadmap", type="primary"):
-                if not st.session_state.models_loaded:
-                    st.error("❌ Please load the models first using the sidebar.")
-                else:
-                    # Double-check that models are actually loaded in the core module
-                    try:
-                        from loading_my_model import model, tokenizer
-                        if model is None or tokenizer is None:
-                            st.error("❌ Models not properly loaded. Please try reloading models.")
+
+        if st.button("Compare with other models", type="primary"):
+            if not st.session_state.models_loaded:
+                st.error("Please load your model first in the sidebar")
+            else:
+                with st.spinner("Generating comparison..."):
+                    cols = st.columns(2)
+
+                    # Your model
+                    with cols[0]:
+                        st.markdown("#### Your Fine-Tuned Model")
+                        your_roadmap = generate_roadmap(compare_skill)
+                        display_roadmap(your_roadmap)
+                        your_eval = RoadmapEvaluator(semantic_model).evaluate_roadmap(compare_skill, your_roadmap)
+                        display_evaluation(your_eval)
+
+                    # Gemma-2B
+                    with cols[1]:
+                        st.markdown("#### Gemma-2B Baseline")
+                        gemma_roadmap = generate_gemma_roadmap(compare_skill)
+
+                        if gemma_roadmap.startswith("Gemma-2B Error"):
+                            st.error(gemma_roadmap)
                         else:
-                            # Save uploaded file temporarily
-                            with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
-                                tmp_file.write(uploaded_file.getvalue())
-                                tmp_file_path = tmp_file.name
-                            
-                            try:
-                                with st.spinner("🔄 Processing PDF and generating roadmap... This may take several minutes."):
-                                    # Generate roadmap from PDF
-                                    roadmap_steps = generate_roadmap_from_pdf(tmp_file_path, generate_roadmap)
-                                    
-                                    if roadmap_steps:
-                                        # Combine all steps into one roadmap
-                                        full_roadmap = "\n\n".join(
-                                            f"**Topic {i+1}: {topic}**\n{output}" 
-                                            for i, (topic, output) in enumerate(roadmap_steps)
-                                        )
-                                        
-                                        st.markdown('<div class="success-message">✅ PDF roadmap generated successfully!</div>', unsafe_allow_html=True)
-                                        display_roadmap(full_roadmap, "PDF-Based Learning Roadmap")
-                                        
-                                        # Download option
-                                        st.download_button(
-                                            label="📥 Download PDF Roadmap",
-                                            data=full_roadmap,
-                                            file_name=f"{uploaded_file.name}_roadmap.txt",
-                                            mime="text/plain"
-                                        )
-                                        
-                                        # Show individual topics
-                                        with st.expander("📋 View Individual Topics"):
-                                            for i, (topic, output) in enumerate(roadmap_steps):
-                                                st.write(f"**Topic {i+1}: {topic}**")
-                                                st.write(output)
-                                                st.markdown("---")
-                                    else:
-                                        st.markdown('<div class="error-message">❌ Failed to generate roadmap. No topics found in the PDF.</div>', unsafe_allow_html=True)
-                            
-                            except Exception as e:
-                                st.markdown(f'<div class="error-message">❌ Error processing PDF: {str(e)}</div>', unsafe_allow_html=True)
-                            
-                            finally:
-                                # Clean up temporary file
-                                if os.path.exists(tmp_file_path):
-                                    os.unlink(tmp_file_path)
-                    
-                    except ImportError as e:
-                        st.error(f"❌ Error importing models: {str(e)}")
-                    except Exception as e:
-                        st.error(f"❌ Unexpected error: {str(e)}")
-    
+                            display_roadmap(gemma_roadmap)
+                            gemma_eval = RoadmapEvaluator(semantic_model).evaluate_roadmap(compare_skill, gemma_roadmap)
+                            display_evaluation(gemma_eval)
+
+                    # Metrics comparison
+                    st.markdown("---")
+                    st.markdown("### 📊 Direct Comparison")
+
+                    if not gemma_roadmap.startswith("Gemma-2B Error"):
+                        comparison = {
+                            "Metric": ["Steps", "Complete Steps", "Content Coverage"],
+                            "Your Model": [
+                                your_eval['structure']['total_steps'],
+                                your_eval['structure']['complete_steps'],
+                                f"{your_eval.get('content_coverage', {}).get('coverage_ratio', 0):.1%}"
+                            ],
+                            "Gemma-2B": [
+                                gemma_eval['structure']['total_steps'],
+                                gemma_eval['structure']['complete_steps'],
+                                f"{gemma_eval.get('content_coverage', {}).get('coverage_ratio', 0):.1%}"
+                            ]
+                        }
+                        st.table(comparison)
+        
     # Footer
     st.markdown("---")
     st.markdown(
